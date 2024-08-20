@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MyFFmpegOpenCVProject)
+project(WebCamTest)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -16,9 +16,9 @@ include_directories(${AVFORMAT_INCLUDE_DIRS}
                     ${SWSCALE_INCLUDE_DIRS}
                     ${OpenCV_INCLUDE_DIRS})
 
-add_executable(my_ffmpeg_opencv_program main.cpp)
+add_executable(WebCamTest main.cpp camera_grab.cpp)
 
-target_link_libraries(my_ffmpeg_opencv_program ${AVFORMAT_LIBRARIES}
+target_link_libraries(WebCamTest ${AVFORMAT_LIBRARIES}
                       ${AVCODEC_LIBRARIES}
                       ${AVUTIL_LIBRARIES}
                       ${SWSCALE_LIBRARIES}
