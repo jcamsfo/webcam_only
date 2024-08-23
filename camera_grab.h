@@ -11,7 +11,7 @@ cv::Mat loadImage(const std::string &imageFile);
 
 cv::VideoCapture InitWebCam(bool &valid_cam, int Horizontal_Res, int Vertical_Res);
 
-void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame); 
+void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame, float Cycle_Time_In);
 
 void get_camera_frame_Test(cv::VideoCapture &capture, cv::Mat &gray_frame_local);
 

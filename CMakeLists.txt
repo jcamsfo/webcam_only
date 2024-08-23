@@ -24,4 +24,6 @@ target_link_libraries(WebCamTest ${AVFORMAT_LIBRARIES}
                       ${SWSCALE_LIBRARIES}
                       ${OpenCV_LIBS})
 
-                    #   const char* imageFile1 = "/home/jim/Desktop/PiTests/images/still1bw.jpg";
+
+# Link pthread library
+target_link_libraries(WebCamTest pthread)                    
