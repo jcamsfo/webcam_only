@@ -39,7 +39,9 @@ cv::VideoCapture InitWebCam(bool &valid_cam, int Horizontal_Res, int Vertical_Re
 }
 
 
-void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame, float Cycle_Time_In) 
+void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame, 
+                            const float Cycle_Time_In, const int Motion_H_Pos, const int Motion_V_Pos,
+                            const int Noise_Thresh, const int Motion_Thresh)
 {
     static int loop_count = 418;
 
@@ -63,7 +65,7 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
     int screen_width = gray_frame_local.cols;
     int screen_height = gray_frame_local.rows;
 
-    cv::Rect roi(screen_width * .125, screen_height * .125, diff_frame_width, diff_frame_height);
+    cv::Rect roi(Motion_H_Pos, Motion_V_Pos, diff_frame_width, diff_frame_height);
 
 
     loop_count++;
@@ -100,9 +102,6 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
             // Create smaller image for detecting motion in the central 75%
             masked_frame_previous = prev_frame(roi).clone();                // Create Masked frame for motion detect  Masked Size BW
 
-
-            // masked_frame_previous.setTo(cv::Scalar(0, 0, 0)); 
-
         }
         else
         {
@@ -121,19 +120,18 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
                 // caclulate the absoute difference of the previousframe and current frame
                 cv::absdiff(masked_frame_current, masked_frame_previous, diff_frame);
 
-                diff_frame -= 5;
+                diff_frame -= Noise_Thresh;
                 // diff_frame *= 10;
 
-                // threshold the absolute difference and set to 255 for seeing on the screen
-             //   cv::threshold(diff_frame, diff_frame, 40, 255, cv::THRESH_BINARY);
-
                 // sum the number of pixels that have moved and divide by 255
-                cv::Scalar sum_diff = cv::sum(diff_frame) / 255;
+                cv::Scalar sum_diff = cv::sum(diff_frame) ;
+
+                int nonZeroCount = cv::countNonZero(diff_frame);
 
                 // timing measure
                 auto loopEndTime = std::chrono::steady_clock::now();
                 std::chrono::duration<double> elapsed_seconds = loopEndTime - loopStartTime;
-                std::cout << "SUMMMMMMMMMMMMMMMMMMMMMMMMMMM " << elapsed_seconds.count() << "  " << sum_diff << "s\n";
+                std::cout << "SUMMMMMMMMMMMMMMMMMMMMMMMMMMM " << elapsed_seconds.count() << "  " << sum_diff << "   nonZeroCount " << nonZeroCount  << "\n";
             }
         }
         full_cycle = !full_cycle ;
