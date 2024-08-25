@@ -6,5 +6,5 @@ Motion_Window_H_Size_Multiplier 75
 Motion_Window_V_Size_Multiplier 75 
 Cycle_Time 1.2 
 Noise_Threshold 5
-Motion_Threshold 1000
+Motion_Threshold 5000
 String_Test 192.168.1.37

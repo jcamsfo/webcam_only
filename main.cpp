@@ -5,6 +5,7 @@
 
 #include <sys/select.h>
 #include <unistd.h>
+#include <ctime>
 
 // #define Cam_H_Size 800
 // #define Cam_V_Size 600
@@ -127,7 +128,30 @@ void readParametersFromFile(const std::string &filename, Client_Parameters_Main 
 }
 
 
+#define Minimum_Time_Between_Storing_Images 1
 
+void Sequencer(const bool Image_Motion, const cv::Mat &gray_frame_local )
+{
+    static std::time_t currentTime = std::time(nullptr);
+    static std::tm* localTime = std::localtime(&currentTime);
+    static unsigned long last_image_stored = 0;
+    static unsigned long time_since_last_iage_stored = 0;
+
+
+    // std::cout << "Current time in 24-hour format: " 
+    //           << std::put_time(localTime, "%H:%M:%S") 
+    //           << " "  << currentTime <<  std::endl;
+
+
+    currentTime = std::time(nullptr);
+    time_since_last_iage_stored = currentTime - last_image_stored;
+    if( (time_since_last_iage_stored > 5) && Image_Motion)
+    {
+        last_image_stored = currentTime;
+        std::cout << " NOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW " << std::endl;
+    }
+
+}
 
 
 
@@ -139,6 +163,7 @@ int main()
     auto loopStartTime = std::chrono::steady_clock::now();
     bool displayImage = true;
     bool displayMotion = true;
+    bool Image_Motion = false;
 
     Client_Parameters_Main Client_Params;
 
@@ -158,6 +183,9 @@ int main()
     std::cout << "Parameter 8: " << Client_Params.Cycle_Time << std::endl;         
     std::cout << "Parameter 8: " << Client_Params.param3 << std::endl;             
 
+    // Sequencer();
+
+    // exit(0);
 
 
     std::string imageFile = "../../images/image.jpg"; // Path to your image file
@@ -173,8 +201,12 @@ int main()
 
     while (true)
     {
+
+
         // get camera frame and noise
-        get_camera_frame(cap, gray_frame, frame_Abs_Diff, Client_Params.Cycle_Time,  Client_Params.Motion_Window_H_Position, Client_Params.Motion_Window_V_Position, Client_Params.Noise_Threshold,Client_Params.Motion_Threshold )    ;
+        Image_Motion = get_camera_frame(cap, gray_frame, frame_Abs_Diff, Client_Params.Cycle_Time,  Client_Params.Motion_Window_H_Position, Client_Params.Motion_Window_V_Position, Client_Params.Noise_Threshold,Client_Params.Motion_Threshold )    ;
+
+
 
 
         //  get_camera_frame_Test(cap, gray_frame);
@@ -199,8 +231,8 @@ int main()
             cv::destroyWindow("Test frame_Abs_Diff Feed"); // Close the window if the image is not displayed
         }
 
-        cv::imshow("Test Webcam Feed", gray_frame);
-        cv::imshow("Test frame_Abs_Diff Feed", frame_Abs_Diff);
+        // cv::imshow("Test Webcam Feed", gray_frame);
+        // cv::imshow("Test frame_Abs_Diff Feed", frame_Abs_Diff);
 
         // opencv display stuff
         int key = cv::waitKey(1);
@@ -217,11 +249,18 @@ int main()
             displayMotion = !displayMotion; // Toggle the flag
         }
 
+
+        Sequencer(Image_Motion, gray_frame);
+
+        // if(Image_Motion)
+        //   std::cout << "MAIN  Image_Motion " << Image_Motion <<   std::endl;
+
+
         // timing
         auto loopEndTime = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed_seconds = loopEndTime - loopStartTime;
         // std::cout << "Loop duration: " << elapsed_seconds.count() << "s\n";
-        if (elapsed_seconds.count() > .015)
+        if (elapsed_seconds.count() > .03333)
             std::cout << "Loop duration BIGGGGGGGGGGGGGGGGGGGGGGG: " << elapsed_seconds.count() << "s\n";
         loopStartTime = std::chrono::steady_clock::now();
     }

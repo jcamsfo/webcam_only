@@ -39,7 +39,7 @@ cv::VideoCapture InitWebCam(bool &valid_cam, int Horizontal_Res, int Vertical_Re
 }
 
 
-void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame, 
+bool get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame, 
                             const float Cycle_Time_In, const int Motion_H_Pos, const int Motion_V_Pos,
                             const int Noise_Thresh, const int Motion_Thresh)
 {
@@ -56,6 +56,8 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
     static cv::Mat masked_frame_previous;
     static cv::Mat masked_frame_current;
 
+    static bool Image_Motion = false;
+
     int diff_frame_width = diff_frame.cols;
     int diff_frame_height = diff_frame.rows;    
 
@@ -64,6 +66,8 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
 
     int screen_width = gray_frame_local.cols;
     int screen_height = gray_frame_local.rows;
+
+    static long nonZeroCount;
 
     cv::Rect roi(Motion_H_Pos, Motion_V_Pos, diff_frame_width, diff_frame_height);
 
@@ -74,6 +78,9 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
 
     Sample_Time_Current = std::chrono::steady_clock::now();  
     Cycle_Time = Sample_Time_Current - Sample_Time_Stored;
+
+
+    Image_Motion = false;
 
     // wait for half the cycle time to capture a frame
     if(Cycle_Time.count() >= Cycle_Time_In/2 )
@@ -126,16 +133,28 @@ void get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
                 // sum the number of pixels that have moved and divide by 255
                 cv::Scalar sum_diff = cv::sum(diff_frame) ;
 
-                int nonZeroCount = cv::countNonZero(diff_frame);
+                nonZeroCount = cv::countNonZero(diff_frame);
+
+                if( nonZeroCount > Motion_Thresh)
+                    Image_Motion = true;
+
+
 
                 // timing measure
                 auto loopEndTime = std::chrono::steady_clock::now();
                 std::chrono::duration<double> elapsed_seconds = loopEndTime - loopStartTime;
-                std::cout << "SUMMMMMMMMMMMMMMMMMMMMMMMMMMM " << elapsed_seconds.count() << "  " << sum_diff << "   nonZeroCount " << nonZeroCount  << "\n";
+                std::cout << "SUMMMMMMMMMMMMMMMMMMMMMMMMMMM " << elapsed_seconds.count() << "  " << sum_diff << "   nonZeroCount " << nonZeroCount  << "\n" ;
+                // std::cout << " " << Image_Motion << "\n" ;
             }
         }
         full_cycle = !full_cycle ;
     }
+
+    // if(Image_Motion)
+    //     std::cout << "Image_Motion " << Image_Motion << "nonZeroCount " << nonZeroCount <<  std::endl;
+
+    return Image_Motion;
+
 }
 
 
