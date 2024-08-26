@@ -16,7 +16,7 @@ include_directories(${AVFORMAT_INCLUDE_DIRS}
                     ${SWSCALE_INCLUDE_DIRS}
                     ${OpenCV_INCLUDE_DIRS})
 
-add_executable(WebCamTest main.cpp camera_grab.cpp)
+add_executable(WebCamTest main.cpp camera_grab.cpp file_io.cpp params.cpp)
 
 target_link_libraries(WebCamTest ${AVFORMAT_LIBRARIES}
                       ${AVCODEC_LIBRARIES}

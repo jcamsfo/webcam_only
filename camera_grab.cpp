@@ -1,19 +1,7 @@
-#include <iostream>
-#include <opencv2/opencv.hpp>
 #include <chrono>
 #include "camera_grab.h"
 
-// Load a grayscale image
-cv::Mat loadImage(const std::string &imageFile)
-{
-    cv::Mat img = cv::imread(imageFile, cv::IMREAD_GRAYSCALE);
-    if (img.empty())
-    {
-        std::cerr << "Couldn't open image " << imageFile << ".\n";
-        exit(-1);
-    }
-    return img;
-}
+
 
 cv::VideoCapture InitWebCam(bool &valid_cam, int Horizontal_Res, int Vertical_Res) // bool init, cv::Mat gray_frame)
 {

@@ -7,7 +7,7 @@
 
 
 // Loads a grayscale image
-cv::Mat loadImage(const std::string &imageFile);
+// cv::Mat loadImage(const std::string &imageFile);
 
 cv::VideoCapture InitWebCam(bool &valid_cam, int Horizontal_Res, int Vertical_Res);
 
