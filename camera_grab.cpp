@@ -218,6 +218,8 @@ int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
         {
             cv::absdiff(Before_After_Frame_Masked, Main_Frame_Masked, Diff_Frame_Temp);
 
+            cv::medianBlur(Diff_Frame_Temp, Diff_Frame_Temp, 3);
+
             Diff_Frame_Temp -= Noise_Thresh;
 
             diff_frame = Diff_Frame_Temp.clone();
@@ -230,6 +232,8 @@ int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
         else if (loop_count == 7)
         {
             cv::absdiff(Before_After_Frame_Masked, Main_Frame_Masked, Diff_Frame_Temp);
+
+            cv::medianBlur(Diff_Frame_Temp, Diff_Frame_Temp, 3);
 
             Diff_Frame_Temp -= Noise_Thresh;
 
