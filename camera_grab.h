@@ -11,11 +11,7 @@
 
 cv::VideoCapture InitWebCam(bool &valid_cam, int Horizontal_Res, int Vertical_Res);
 
-bool  get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame, 
-                            const float Cycle_Time_In, const int Motion_H_Pos, const int Motion_V_Pos,
-                            const int Noise_Thresh, const int Motion_Thresh);
-
-int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame,
+int get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame,
                        const float Cycle_Time_In, const int Motion_H_Pos, const int Motion_V_Pos,
                        const int Noise_Thresh, const int Motion_Thresh);                            
 

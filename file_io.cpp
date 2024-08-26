@@ -1,6 +1,7 @@
 
 #include <filesystem>
 #include <regex>
+#include <fstream>
 
 #include "file_io.h"
 
@@ -20,8 +21,6 @@ cv::Mat loadImage(const std::string &imageFile)
     }
     return img;
 }
-
-
 
 
 std::string getNextFileNameRaw(const std::string &directory)
@@ -56,7 +55,6 @@ std::string getNextFileNameRaw(const std::string &directory)
 }
 
 
-
 std::string getNextFileNameTif(const std::string &directory)
 {
     std::regex filePattern(R"((\d+)\.tif)");
@@ -89,8 +87,6 @@ std::string getNextFileNameTif(const std::string &directory)
 }
 
 
-
-
 void writeMatRawData(const cv::Mat &mat, const std::string &filename)
 {
     // Open a binary file for writing
@@ -109,6 +105,7 @@ void writeMatRawData(const cv::Mat &mat, const std::string &filename)
     // Close the file
     outFile.close();
 }
+
 
 bool writeMatToTif(const cv::Mat &mat, const std::string &filename)
 {
