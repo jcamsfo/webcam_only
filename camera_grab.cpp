@@ -148,11 +148,9 @@ bool get_camera_frame(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
     return Image_Motion;
 }
 
-
-
 int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::Mat &diff_frame,
-                       const float Cycle_Time_In, const int Motion_H_Pos, const int Motion_V_Pos,
-                       const int Noise_Thresh, const int Motion_Thresh)
+                      const float Cycle_Time_In, const int Motion_H_Pos, const int Motion_V_Pos,
+                      const int Noise_Thresh, const int Motion_Thresh)
 {
     static int Image_Status = -1;
     static int loop_count = 0;
@@ -164,7 +162,6 @@ int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
 
     static cv::Mat Before_After_Frame; // (768, 1024, CV_8UC1);
     static cv::Mat Main_Frame;         // (768, 1024, CV_8UC1);
-
 
     std::vector<cv::Mat> mats;
 
@@ -192,7 +189,7 @@ int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
     Sample_Time_Current = std::chrono::steady_clock::now();
     Cycle_Time = Sample_Time_Current - Sample_Time_Stored;
 
-    Image_Status = -1 ;
+    Image_Status = -1;
 
     // wait for half the cycle time to capture a frame
     if ((Cycle_Time.count() >= Cycle_Time_In) && (loop_count <= 7))
@@ -213,6 +210,8 @@ int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
             cv::cvtColor(Main_Frame, Main_Frame, cv::COLOR_BGR2GRAY); // Convert to BW   Camera Size BW
             cv::resize(Main_Frame, Main_Frame, cv::Size(screen_width, screen_height));
             Main_Frame_Masked = Main_Frame(roi).clone(); // Create Masked frame for motion detect  Masked Size BW
+
+            std::cout << "nonZeroCount_12 " << nonZeroCount_12 << " nonZeroCount_34 " << nonZeroCount_23 << std::endl;
         }
 
         else if (loop_count == 4)
@@ -239,7 +238,10 @@ int get_camera_frame2(cv::VideoCapture &capture, cv::Mat &gray_frame_local, cv::
             nonZeroCount_23 = cv::countNonZero(Diff_Frame_Temp);
 
             if ((nonZeroCount_12 > Motion_Thresh) && (nonZeroCount_23 > Motion_Thresh))
+            {
                 Image_Status = 1;
+                std::cout << "nonZeroCount_12 " << nonZeroCount_12 << " nonZeroCount_34 " << nonZeroCount_23 << std::endl;
+            }
             else
                 Image_Status = 0;
 
