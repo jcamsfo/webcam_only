@@ -11,8 +11,8 @@
 
 int Display_Test_Images(cv::Mat &Image_1, cv::Mat &Image_2)
 {
-    bool displayImage = true;
-    bool displayMotion = true;
+    static bool displayImage = true;
+    static bool displayMotion = true;
     cv::namedWindow("Test Webcam Feed", cv::WINDOW_AUTOSIZE);
 
     
@@ -49,6 +49,9 @@ int Display_Test_Images(cv::Mat &Image_1, cv::Mat &Image_2)
     {
         cv::destroyWindow("Test frame_Abs_Diff Feed"); // Close the window if the image is not displayed
     }
+
+    // key = 'l';
+
     return 1;
 }
 
